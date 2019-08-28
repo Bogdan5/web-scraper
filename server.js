@@ -1,11 +1,10 @@
 const express = require('express');
 const bodyParser = require("body-parser");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const pg = require('pg');
-require('custom-env').env();
 
 const app = express();
-
-// process.env.connectionString
 
 // Bodyparser middleware
 app.use(
