@@ -20,7 +20,7 @@ class App extends Component {
     const { username, email, password, password2 } = this.state;
     e.preventDefault();
     const user = { username, email, password, password2 };
-    axios.post('/register', user)
+    axios.post('/', user)
       .then((res) => {
         if (res.data.success) {
           console.log('Response is: ', res);
