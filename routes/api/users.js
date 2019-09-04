@@ -12,34 +12,49 @@ const pool = new Pool({
 });
 
 // Load input validation
-const validateRegisterInput = require("../../validation/register");
+const validateRegisterInput = require('../../validation/register');
 const validateLoginInput = require('../../validation/login');
 
 
 router.post('/', (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
   // Check validation
-  // if (!isValid) {
-  //   return res.status(400).json(errors);
-  // }
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
 
   pool.connect((err, client, done) => {
+    const { username, email, password } = req.body;
     if (err) {
       console.error('Database connection failed', err);
     } else {
-      //check if email already used
-      console.log('Done', req.body.email);
-      client.query('SELECT * FROM users WHERE email = $1', [req.body.email],
+      // check if email already used
+
+      console.log('Done', email);
+      client.query('SELECT * FROM users WHERE username=$1 OR email = $2', [username, email],
         (error, result) => {
-          done();
           if (error) {
-            console.error('Error in connection ', error);
-            res.status(400).send(err);
-          } else {
-            console.log('Response is ', result);
-            res.status(200).send(result);
+            console.error('Error in connection selecting ', error);
+            return res.status(400).send(err);
           }
-          pool.end();
+
+          console.log('Response is ', result.rows);
+          if (!result.rows.length) {
+            bcrypt.genSalt(10, (errr, salt) => {
+              bcrypt.hash(password, salt, (erro, hash) => {
+                if (erro) throw erro;
+                client.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3)',
+                  [username, email, hash], (err2, reslt) => {
+                    done();
+                    if (error) {
+                      console.error('Error in connection inserting ', err2);
+                      return res.status(400).send(err2);
+                    }
+                    return res.status(200).send(reslt);
+                  });
+              });
+            });
+          }
         });
 
       // client.query('INSERT INTO users(username, email, password) VALUES($1 $2 $3)',
