@@ -28,6 +28,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "pg": "^7.12.1",
+    "pg-native": "^3.0.0",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.0.1",
     "redux": "^4.0.4",
@@ -37,6 +38,7 @@
   "devDependencies": {
     "eslint": "^6.2.2",
     "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-flowtype": "^4.3.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.14.3",

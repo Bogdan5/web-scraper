@@ -24,26 +24,28 @@ router.post('/register', (req, res) => {
       console.error('Database connection failed', err);
     } else {
       //check if email already used
-      client.query('SELECT * FROM users WERE email = $1'), [req.body.email],
-        (error, results) => {
-          if (error) => {
-            console.error('Error in connection ', error);
-            throw error;
-          } else {
-            console.log('Response is ', response);
-          }
-        }
 
-      client.query('INSERT INTO users(username, email, password) VALUES($1 $2 $3)',
-        [req.body.username, req.body.email, req.body.password], (error, results) => {
+      client.query('SELECT * FROM users WERE email = $1', [req.body.email],
+        (error, results) => {
           if (error) {
             console.error('Error in connection ', error);
             throw error;
           } else {
-            
-            res.redirect('/');
+            console.log('Response is ', results);
           }
         });
+
+      // client.query('INSERT INTO users(username, email, password) VALUES($1 $2 $3)',
+      //   [req.body.username, req.body.email, req.body.password], (error, results) => {
+      //     if (error) {
+      //       console.error('Error in connection ', error);
+      //       throw error;
+      //     } else {
+      //       res.redirect('/');
+      //     }
+      //   });
     }
   });
 });
+
+module.exports = router;
