@@ -1,24 +1,30 @@
 const JwtStrategy = require('passport-jwt').Strategy;
 const { ExtractJwt } = require('passport-jwt');
+const { Pool, Client } = require('pg');
 require('custom-env').env();
-// const mongoose = require('mongoose');
-// const User = mongoose.model('users');
-const keys = require('../config/keys');
+
+const pool = new Pool({
+  connectionString: process.env.connectionString,
+});
+
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = keys.secretOrKey;
+opts.secretOrKey = process.env.secretOrKey;
 
 module.exports = (passport) => {
   passport.use(
-    new JwtStrategy(opts, (jwt_payload, done) => {     
-      User.findById(jwt_payload.id)
-        .then(user => {
-          if (user) {
-            return done(null, user);
-          }
-          return done(null, false);
-        })
-        .catch(err => console.log(err));
-    })
+    new JwtStrategy(opts, (jwt_payload, done) => {
+      pool.connect((err, client) => {
+        client.query('SELECT id FROM users WHERE id=$1', [jwt_payload.id],
+          (error, result) => {
+            if (error) {
+              console.error('Error in connection selecting ', error);
+              return done(null, false);
+            }
+            console.log('Done ', result);
+            return done(null, result);
+          });
+      });
+    }),
   );
 };

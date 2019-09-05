@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { Pool, Client } = require('pg')
+const { Pool, Client } = require('pg');
 
 const router = express.Router();
 
@@ -20,6 +20,7 @@ router.post('/', (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
   // Check validation
   if (!isValid) {
+    console.log('Not valid');
     return res.status(400).json(errors);
   }
 
@@ -43,8 +44,8 @@ router.post('/', (req, res) => {
             bcrypt.genSalt(10, (errr, salt) => {
               bcrypt.hash(password, salt, (erro, hash) => {
                 if (erro) throw erro;
-                client.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3)',
-                  [username, email, hash], (err2, reslt) => {
+                client.query('INSERT INTO users (username, email, password, date) VALUES ($1, $2, $3, $4)',
+                  [username, email, hash, Date.now()], (err2, reslt) => {
                     done();
                     if (error) {
                       console.error('Error in connection inserting ', err2);
