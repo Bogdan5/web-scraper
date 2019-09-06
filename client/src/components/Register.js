@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import '../App.css';
 import axios from 'axios';
 
+import { browserHistory } from 'react-router';
+
 class Register extends Component {
   constructor(props){
     super(props);
@@ -21,10 +23,11 @@ class Register extends Component {
     const { username, email, password, password2 } = this.state;
     e.preventDefault();
     const user = { username, email, password, password2 };
-    axios.post('/', user)
+    axios.post('/register', user)
       .then((res) => {
         if (res.data.success) {
           console.log('Response is: ', res);
+          res.redirect('/');
         } else {
           console.log('if false');
           var error = new Error('Error ' + res.status + ': ' + res.statusText);
