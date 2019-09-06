@@ -71,7 +71,6 @@ router.post('/login', (req, res) => {
   const { email, password } = req.body;
   // Find user by email
   pool.connect((err, client, done) => {
-    const { username, email, password } = req.body;
     if (err) {
       console.error('Database connection failed', err);
     } else {
@@ -89,40 +88,38 @@ router.post('/login', (req, res) => {
           if (!result.rows.length) {
             return res.status(404).json({ emailnotfound: 'Email not found' });
           }
+          // Check password
+          bcrypt.compare(password, result[0].password).then((isMatch) => {
+            if (isMatch) {
+              // User matched
+              // Create JWT Payload
+              const payload = {
+                id: result[0].id,
+                name: result[0].username,
+              };
+              // Sign token
+              jwt.sign(
+                payload,
+                process.env.secretOrKey,
+                {
+                  expiresIn: 3600, // 1 year in seconds
+                },
+                (err, token) => {
+                  res.json({
+                    success: true,
+                    token: `Bearer ${token}`,
+                  });
+                },
+              );
+            } else {
+              return res
+                .status(400)
+                .json({ passwordincorrect: 'Password incorrect' });
+            }
+          });
         });
     }
   });
-
-  // Check password
-      bcrypt.compare(password, user.password).then(isMatch => {
-        if (isMatch) {
-          // User matched
-          // Create JWT Payload
-          const payload = {
-            id: user.id,
-            name: user.name
-          };
-  // Sign token
-          jwt.sign(
-            payload,
-            keys.secretOrKey,
-            {
-              expiresIn: 31556926 // 1 year in seconds
-            },
-            (err, token) => {
-              res.json({
-                success: true,
-                token: 'Bearer ' + token
-              });
-            }
-          );
-        } else {
-          return res
-            .status(400)
-            .json({ passwordincorrect: 'Password incorrect' });
-        }
-      });
-    });
 });
 
 module.exports = router;
