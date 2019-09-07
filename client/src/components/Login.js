@@ -42,7 +42,7 @@ class Login extends Component {
           <input type='text' id='username' placeholder='Username' onChange={this.handler} />
           <label htmlFor='' />
           <input type='text' id='password' placeholder='Password' onChange={this.handler} />
-          <button type='submit' />
+          <button type='submit'>Submit</button>
         </form>
       </div>
     )
