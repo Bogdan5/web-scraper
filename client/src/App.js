@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import { Switch, Route, NavLink } from 'react-router-dom';
+// import axios from 'axios';
+import { Switch, Route } from 'react-router-dom';
 import Register from './components/Register.js';
+import './App.scss';
 
 class App extends Component {
   constructor(props){

@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pg = require('pg');
+const passport = require("passport");
 
 const app = express();
 const users = require('./routes/api/users');
@@ -14,6 +15,11 @@ app.use(
   }),
 );
 app.use(bodyParser.json());
+
+// Passport middleware
+app.use(passport.initialize());
+// Passport config
+require("./config/passport")(passport);
 
 app.use('/', users);
 

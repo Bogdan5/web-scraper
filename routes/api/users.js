@@ -20,7 +20,6 @@ router.post('/register', (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
   // Check validation
   if (!isValid) {
-    console.log('Not valid');
     return res.status(400).json(errors);
   }
 
@@ -31,7 +30,15 @@ router.post('/register', (req, res) => {
     } else {
       // check if email already used
 
-      console.log('Done', email);
+      // client.query('SELECT * FROM users WHERE id=$1', [1], (error, result) => {
+      //   client.query('INSERT INTO users (username, email, password, date) VALUES ($1, $2, $3, $4)',
+      //     ['username', 'email', 'hash', Date.now()], (err2, reslt) => {
+      //       if (err2) console.log('Error ', err2);
+      //       console.log('Added', );
+      //     });
+      // });
+
+
       client.query('SELECT * FROM users WHERE username=$1 OR email = $2', [username, email],
         (error, result) => {
           if (error) {
@@ -39,14 +46,12 @@ router.post('/register', (req, res) => {
             return res.status(400).send(err);
           }
 
-          console.log('Response is ', result.rows);
-          if (!result.rows.length) {
+          if (result.rows.length === 0) {
             bcrypt.genSalt(10, (errr, salt) => {
               bcrypt.hash(password, salt, (erro, hash) => {
                 if (erro) throw erro;
                 client.query('INSERT INTO users (username, email, password, date) VALUES ($1, $2, $3, $4)',
                   [username, email, hash, Date.now()], (err2, reslt) => {
-                    done();
                     if (error) {
                       console.error('Error in connection inserting ', err2);
                       return res.status(400).send(err2);
@@ -64,11 +69,11 @@ router.post('/register', (req, res) => {
 router.post('/login', (req, res) => {
   // Form validation
   const { errors, isValid } = validateLoginInput(req.body);
+  const { email, password } = req.body;
   // Check validation
   if (!isValid) {
     return res.status(400).json(errors);
   }
-  const { email, password } = req.body;
   // Find user by email
   pool.connect((err, client, done) => {
     if (err) {
@@ -76,7 +81,6 @@ router.post('/login', (req, res) => {
     } else {
       // check if email already used
 
-      console.log('Done', email);
       client.query('SELECT email FROM users WHERE email=$1', [email],
         (error, result) => {
           if (error) {
@@ -84,7 +88,6 @@ router.post('/login', (req, res) => {
             return res.status(400).send(err);
           }
 
-          console.log('Response is ', result.rows);
           if (!result.rows.length) {
             return res.status(404).json({ emailnotfound: 'Email not found' });
           }

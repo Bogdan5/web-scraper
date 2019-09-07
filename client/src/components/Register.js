@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../App.css';
 import axios from 'axios';
 
-import { browserHistory } from 'react-router';
+// import { browserHistory } from 'react-router';
 
 class Register extends Component {
   constructor(props){
