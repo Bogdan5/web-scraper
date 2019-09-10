@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import '../App.css';
 import axios from 'axios';
-
-// import { browserHistory } from 'react-router';
+import { browserHistory, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { registerUser } from '../../actions/authActions';
 
 class Register extends Component {
   constructor(props){
@@ -23,20 +24,7 @@ class Register extends Component {
     const { username, email, password, password2 } = this.state;
     e.preventDefault();
     const user = { username, email, password, password2 };
-    axios.post('/register', user)
-      .then((res) => {
-        if (res.data.success) {
-          console.log('Response is: ', res);
-          res.redirect('/');
-        } else {
-          console.log('if false');
-          var error = new Error('Error ' + res.status + ': ' + res.statusText);
-          error.res = res;
-          throw error;
-        }
-      }
-    )
-    .catch(err => console.log(err));
+    this.props.registerUser(user, this.props.history);
   }
 
   render(){
@@ -62,4 +50,14 @@ class Register extends Component {
   }
 }
 
-export default Register;
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  dispatch,
+  registerUser: () => dispatch(registerUser())
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Register));
