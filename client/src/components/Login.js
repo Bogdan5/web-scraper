@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../App.scss';
-import axios from 'axios';
+// import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { loginUser } from '../actions/authActions';
@@ -15,6 +15,17 @@ class Login extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.auth.isAuthenticated) {
+      this.props.history.push("/dashboard"); // push user to dashboard when they login
+    }
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
+    }
+  }
+
   handler = (e) => {
     this.setState({ [e.target.id]: e.target.value });
   }
@@ -22,28 +33,8 @@ class Login extends Component {
   submit = (e) => {
     const { username, password } = this.state;
     e.preventDefault();
-
-    const userData = {
-      email: this.state.email,
-      password: this.state.password
-    };
-
+    const userData = { username, password };
     this.props.loginUser(userData);
-
-    // const user = { username, password };
-    // axios.post('/login', user)
-    //   .then((res) => {
-    //     if (res.data.success) {
-    //       return res.status(200).send('Signed in!');
-    //     }
-    //     console.log('Error ');
-    //     return res.status(400).send('Error');
-
-    //   })
-    //   .catch((err) => {
-    //     console.log('Error ', err);
-    //     throw err;
-    //   })
   }
 
   render(){
