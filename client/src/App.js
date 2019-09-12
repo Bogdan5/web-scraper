@@ -26,7 +26,7 @@ class App extends Component {
         <div className='App'>
           <Nav variant="pills">
             <Nav.Item>
-              <Nav.Link as={Link} eventKey="1" to='/' exact >
+              <Nav.Link as={Link} eventKey="1" to='/' exact='true' >
                 Home
               </Nav.Link>
             </Nav.Item>

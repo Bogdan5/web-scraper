@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import './App.scss';
+import '../App.scss';
 import axios from 'axios';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { loginUser } from '../actions/authActions';
+
 
 class Login extends Component {
   constructor(props){
@@ -18,20 +22,28 @@ class Login extends Component {
   submit = (e) => {
     const { username, password } = this.state;
     e.preventDefault();
-    const user = { username, password };
-    axios.post('/login', user)
-      .then((res) => {
-        if (res.data.success) {
-          return res.status(200).send('Signed in!');
-        }
-        console.log('Error ');
-        return res.status(400).send('Error');
 
-      })
-      .catch((err) => {
-        console.log('Error ', err);
-        throw err;
-      })
+    const userData = {
+      email: this.state.email,
+      password: this.state.password
+    };
+
+    this.props.loginUser(userData);
+
+    // const user = { username, password };
+    // axios.post('/login', user)
+    //   .then((res) => {
+    //     if (res.data.success) {
+    //       return res.status(200).send('Signed in!');
+    //     }
+    //     console.log('Error ');
+    //     return res.status(400).send('Error');
+
+    //   })
+    //   .catch((err) => {
+    //     console.log('Error ', err);
+    //     throw err;
+    //   })
   }
 
   render(){
@@ -49,4 +61,13 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  loginUser: (user) => dispatch(loginUser(user))
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));

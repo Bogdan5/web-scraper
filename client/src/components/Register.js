@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import '../App.css';
-import axios from 'axios';
-import { browserHistory, withRouter } from 'react-router-dom';
+import '../App.scss';
+// import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { registerUser } from '../../actions/authActions';
+import { registerUser } from '../actions/authActions';
+// import { bindActionCreators } from 'redux';
 
 class Register extends Component {
   constructor(props){
@@ -55,9 +56,12 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  dispatch,
-  registerUser: () => dispatch(registerUser())
-});
+const mapDispatchToProps = (dispatch, ownProps) => {
+  console.log('Own props ', ownProps);
+  // return bindActionCreators({registerUser}, dispatch);
+  return ({
+    registerUser: (user, history) => dispatch(registerUser(user, history))
+  });
+};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Register));

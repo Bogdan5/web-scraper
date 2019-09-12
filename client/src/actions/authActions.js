@@ -13,21 +13,23 @@ export const registerUser = (userData, history) => dispatch => {
   axios
     .post('/register', userData)
     .then(res => history.push('/login')) // re-direct to login on successful register
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-      })
+    .catch(err => {
+        console.log('Error ', err.response);
+        return dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        });
+      }
     );
 };
 
 // Login - get user token
 export const loginUser = userData => dispatch => {
   axios
-    .post('/api/users/login', userData)
+    .post('/login', userData)
     .then(res => {
       // Save to localStorage
-// Set token to localStorage
+      // Set token to localStorage
       const { token } = res.data;
       localStorage.setItem('jwtToken', token);
       // Set token to Auth header

@@ -30,14 +30,7 @@ router.post('/register', (req, res) => {
     } else {
       // check if email already used
 
-      // client.query('SELECT * FROM users WHERE id=$1', [1], (error, result) => {
-      //   client.query('INSERT INTO users (username, email, password, date) VALUES ($1, $2, $3, $4)',
-      //     ['username', 'email', 'hash', Date.now()], (err2, reslt) => {
-      //       if (err2) console.log('Error ', err2);
-      //       console.log('Added', );
-      //     });
-      // });
-
+      client.query('DELETE FROM users WHERE username=$1 OR username=$2', ['username', 'uuu'], (err, res) =>{});
 
       client.query('SELECT * FROM users WHERE username=$1 OR email = $2', [username, email],
         (error, result) => {
@@ -56,6 +49,7 @@ router.post('/register', (req, res) => {
                       console.error('Error in connection inserting ', err2);
                       return res.status(400).send(err2);
                     }
+                    // console.log('Success', reslt);
                     return res.status(200).send(reslt);
                   });
               });
