@@ -15,15 +15,17 @@ class Login extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     if (nextProps.auth.isAuthenticated) {
+      console.log('Auth');
       this.props.history.push("/dashboard"); // push user to dashboard when they login
     }
-    if (nextProps.errors) {
-      this.setState({
-        errors: nextProps.errors
-      });
-    }
+    // if (Object.keys(nextProps.errors).length) {
+    //   console.log('Errors', nextProps.errors);
+    //   this.setState({
+    //     errors: nextProps.errors
+    //   });
+    // }
   }
 
   handler = (e) => {

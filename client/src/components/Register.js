@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import '../App.scss';
-// import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { registerUser } from '../actions/authActions';
-// import { bindActionCreators } from 'redux';
 
 class Register extends Component {
   constructor(props){
